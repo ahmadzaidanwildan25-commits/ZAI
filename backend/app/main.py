@@ -1,11 +1,11 @@
-from fastapi import FastAPI
+﻿from fastapi import FastAPI
 from pydantic import BaseModel
-import requests
+
+from app.ai import ask_ai
+from app.memory import remember, recall
+from app.prompt import SYSTEM_PROMPT
 
 app = FastAPI()
-
-OLLAMA_URL = "http://localhost:11434/api/generate"
-MODEL = "qwen3:8b"
 
 
 class Chat(BaseModel):
@@ -22,32 +22,68 @@ def root():
 
 @app.post("/chat")
 def chat(data: Chat):
-    try:
-        response = requests.post(
-            OLLAMA_URL,
-            json={
-                "model": MODEL,
-                "prompt": data.message,
-                "stream": False,
-                "think": False,
-                "options": {
-                    "temperature": 0.7,
-                    "num_predict": 256,
-                    "keep_alive": "30m"
-                }
-            },
-            timeout=300
-        )
 
-        response.raise_for_status()
+    text = data.message.strip()
+    lower = text.lower()
 
-        result = response.json()
+    # ===========================
+    # SIAPA NAMA SAYA
+    # ===========================
+    if (
+        "siapa nama saya" in lower
+        or "namaku siapa" in lower
+        or "nama saya siapa" in lower
+    ):
+
+        nama = recall("nama")
+
+        if nama:
+            return {
+                "reply": f"Nama Anda adalah {nama}."
+            }
 
         return {
-            "reply": result["response"]
+            "reply": "Maaf, saya belum mengetahui nama Anda."
         }
 
-    except Exception as e:
-        return {
-            "reply": f"ERROR : {str(e)}"
-        }
+    # ===========================
+    # MENYIMPAN NAMA
+    # ===========================
+    if lower.startswith("nama saya "):
+
+        nama = text[10:].strip()
+
+        # jangan simpan jika itu pertanyaan
+        if nama.lower() in [
+            "",
+            "siapa",
+            "?",
+            "apa",
+            "siapa?",
+            "apa?"
+        ]:
+            pass
+        else:
+            remember("nama", nama)
+
+            return {
+                "reply": f"Baik, saya akan mengingat nama Anda {nama}."
+            }
+
+    # ===========================
+    # PROMPT AI
+    # ===========================
+    nama = recall("nama")
+
+    prompt = SYSTEM_PROMPT
+
+    if nama:
+        prompt += f"\n\nNama pengguna adalah {nama}."
+
+    prompt += f"\n\nUser: {text}\nZAI:"
+
+    jawaban = ask_ai(prompt)
+
+    return {
+        "reply": jawaban
+    }
