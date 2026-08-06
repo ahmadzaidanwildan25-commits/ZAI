@@ -5,7 +5,7 @@ import requests
 app = FastAPI()
 
 OLLAMA_URL = "http://localhost:11434/api/generate"
-MODEL_NAME = "qwen3:8b"
+MODEL = "qwen3:8b"
 
 
 class Chat(BaseModel):
@@ -26,22 +26,28 @@ def chat(data: Chat):
         response = requests.post(
             OLLAMA_URL,
             json={
-                "model": MODEL_NAME,
+                "model": MODEL,
                 "prompt": data.message,
-                "stream": False
+                "stream": False,
+                "think": False,
+                "options": {
+                    "temperature": 0.7,
+                    "num_predict": 256,
+                    "keep_alive": "30m"
+                }
             },
-            timeout=120
+            timeout=300
         )
 
         response.raise_for_status()
 
-        answer = response.json()["response"]
+        result = response.json()
 
         return {
-            "reply": answer
+            "reply": result["response"]
         }
 
     except Exception as e:
         return {
-            "reply": f"Terjadi kesalahan: {str(e)}"
+            "reply": f"ERROR : {str(e)}"
         }
