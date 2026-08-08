@@ -192,7 +192,7 @@ class _ChatScreenState extends State<ChatScreen> {
               : const Color(0xFF1E293B),
           borderRadius: BorderRadius.circular(18),
           border: Border.all(
-            color: Colors.white.withOpacity(0.08),
+            color: Colors.white.withValues(alpha: 0.08),
           ),
         ),
         child: SelectableText(
@@ -352,8 +352,8 @@ class _ChatScreenState extends State<ChatScreen> {
                 border: Border(
                   top: BorderSide(
                     color:
-                        Colors.white.withOpacity(
-                      0.06,
+                        Colors.white.withValues(
+                      alpha: 0.06,
                     ),
                   ),
                 ),
@@ -452,7 +452,7 @@ class _ChatScreenState extends State<ChatScreen> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: const Color(0xFF2563EB)
-                    .withOpacity(0.15),
+                    .withValues(alpha: 0.15),
                 border: Border.all(
                   color:
                       const Color(0xFF2563EB),

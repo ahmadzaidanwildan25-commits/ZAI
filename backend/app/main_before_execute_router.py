@@ -1,8 +1,9 @@
-﻿from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import Optional
 import re
+
 
 # ============================================================
 # ZAI MODULES
@@ -24,13 +25,8 @@ from app.memory import (
     clear_chat_history,
 )
 
-from app.prompt import SYSTEM_PROMPT
+from app.prompt import SYSTEM_PROMPT`r`nfrom app.core.router import ToolRouter
 
-# ============================================================
-# TOOL ROUTER
-# ============================================================
-
-from app.core.router import ToolRouter
 
 # ============================================================
 # APPLICATION
@@ -40,9 +36,8 @@ app = FastAPI(
     title="ZAI AI",
     description="Personal AI Assistant ZAI",
     version="1.0.0",
-)
+)`r`ntool_router = ToolRouter()
 
-tool_router = ToolRouter()
 
 # ============================================================
 # CORS
@@ -56,13 +51,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 # ============================================================
 # REQUEST MODEL
 # ============================================================
 
-
 class Chat(BaseModel):
-
     message: str = Field(
         ...,
         min_length=1,
@@ -75,10 +69,8 @@ class Chat(BaseModel):
 # ROOT
 # ============================================================
 
-
 @app.get("/")
 def root():
-
     return {
         "assistant": "ZAI",
         "status": "ONLINE",
@@ -90,10 +82,8 @@ def root():
 # HEALTH CHECK
 # ============================================================
 
-
 @app.get("/health")
 def health():
-
     return {
         "status": "healthy",
         "assistant": "ZAI",
@@ -104,18 +94,14 @@ def health():
 # MEMORY ANSWER HELPER
 # ============================================================
 
-
 def get_memory_answer(
     key: str,
     template: str,
 ):
-
     try:
-
         value = recall(key)
 
         if value is not None and str(value).strip():
-
             return {
                 "reply": template.format(value)
             }
@@ -144,7 +130,6 @@ def get_memory_answer(
 # ============================================================
 # AUTO MEMORY
 # ============================================================
-
 
 def save_memory_from_text(
     text: str,
@@ -294,7 +279,6 @@ def save_memory_from_text(
 # MEMORY SUMMARY
 # ============================================================
 
-
 def format_memory_summary() -> str:
 
     try:
@@ -335,10 +319,7 @@ def format_memory_summary() -> str:
 
                 label = labels.get(
                     str(key).lower(),
-                    str(key).replace(
-                        "_",
-                        " ",
-                    ).title(),
+                    str(key).replace("_", " ").title(),
                 )
 
                 lines.append(
@@ -410,7 +391,6 @@ def format_memory_summary() -> str:
 # DETECT MEMORY SUMMARY QUESTION
 # ============================================================
 
-
 def is_memory_summary_question(
     text: str,
 ) -> bool:
@@ -446,7 +426,6 @@ def is_memory_summary_question(
 # ============================================================
 # MEMORY QUERY
 # ============================================================
-
 
 def handle_memory_query(
     text: str,
@@ -563,7 +542,6 @@ def handle_memory_query(
 # ============================================================
 # MEMORY COMMANDS
 # ============================================================
-
 
 def handle_memory_commands(
     text: str,
@@ -768,7 +746,6 @@ def handle_memory_commands(
 # BUILD AI PROMPT
 # ============================================================
 
-
 def build_ai_prompt(
     user_message: str,
 ) -> str:
@@ -849,7 +826,6 @@ def build_ai_prompt(
 # CHAT
 # ============================================================
 
-
 @app.post("/chat")
 def chat(data: Chat):
 
@@ -864,6 +840,9 @@ def chat(data: Chat):
 
     # ========================================================
     # DIRECT MEMORY SUMMARY
+    #
+    # PENTING:
+    # Pertanyaan memory TIDAK BOLEH masuk Ollama.
     # ========================================================
 
     if is_memory_summary_question(text):
@@ -990,85 +969,6 @@ def chat(data: Chat):
         return command_result
 
     # ========================================================
-    # TOOL ROUTER
-    #
-    # PENTING:
-    # Tool harus diproses sebelum Ollama.
-    # ========================================================
-
-    try:
-
-        tool_result = tool_router.route(
-            text
-        )
-
-    except Exception as error:
-
-        print(
-            f"[TOOL ROUTER ERROR] {error}"
-        )
-
-        tool_result = {
-            "executed": False,
-            "success": False,
-            "reply": None,
-        }
-
-    # ========================================================
-    # TOOL EXECUTED
-    # ========================================================
-
-    if tool_result.get("executed"):
-
-        try:
-
-            add_chat_message(
-                "user",
-                text,
-            )
-
-            add_chat_message(
-                "assistant",
-                tool_result.get(
-                    "reply",
-                    "Perintah selesai.",
-                ),
-            )
-
-        except Exception as error:
-
-            print(
-                f"[TOOL HISTORY SAVE ERROR] {error}"
-            )
-
-        return {
-            "reply": tool_result.get(
-                "reply",
-                "Perintah selesai.",
-            )
-        }
-
-    # ========================================================
-    # TOOL DETECTED BUT FAILED
-    # ========================================================
-
-    if (
-        tool_result.get("intent") in {
-            "application",
-            "system",
-            "file",
-            "browser",
-        }
-        and tool_result.get("action") is not None
-        and tool_result.get("success") is False
-        and tool_result.get("reply")
-    ):
-
-        return {
-            "reply": tool_result["reply"]
-        }
-
-    # ========================================================
     # BUILD AI PROMPT
     # ========================================================
 
@@ -1145,7 +1045,6 @@ def chat(data: Chat):
 # GET MEMORY
 # ============================================================
 
-
 @app.get("/memory")
 def get_memory():
 
@@ -1170,7 +1069,6 @@ def get_memory():
 # GET MEMORY SUMMARY
 # ============================================================
 
-
 @app.get("/memory/summary")
 def memory_summary():
 
@@ -1182,7 +1080,6 @@ def memory_summary():
 # ============================================================
 # GET CHAT HISTORY
 # ============================================================
-
 
 @app.get("/history")
 def history(
@@ -1218,7 +1115,6 @@ def history(
 # CLEAR MEMORY
 # ============================================================
 
-
 @app.delete("/memory")
 def delete_memory():
 
@@ -1251,7 +1147,6 @@ def delete_memory():
 # ============================================================
 # CLEAR CHAT HISTORY
 # ============================================================
-
 
 @app.delete("/history")
 def delete_history():
@@ -1286,18 +1181,14 @@ def delete_history():
 # STATUS
 # ============================================================
 
-
 @app.get("/status")
 def status():
 
     try:
 
-        memory_data = all_memory()
-
-        if isinstance(memory_data, dict):
-            memory_items = len(memory_data)
-        else:
-            memory_items = 0
+        memory_items = len(
+            all_memory()
+        )
 
     except Exception:
 
@@ -1317,3 +1208,4 @@ def status():
         "memory_items": memory_items,
         "chat_messages": messages,
     }
+

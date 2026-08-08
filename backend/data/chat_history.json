@@ -1,46 +1,6 @@
 [
     {
         "role": "user",
-        "content": "Tadi saya bilang nama saya siapa?"
-    },
-    {
-        "role": "assistant",
-        "content": "Nama Anda adalah zaidan."
-    },
-    {
-        "role": "user",
-        "content": "Halo ZAI"
-    },
-    {
-        "role": "assistant",
-        "content": "Halo, zaidan! 😊 Apa yang bisa saya bantu hari ini?"
-    },
-    {
-        "role": "user",
-        "content": "Nama saya Zaidan"
-    },
-    {
-        "role": "assistant",
-        "content": "Baik, saya akan mengingat nama Anda zaidan."
-    },
-    {
-        "role": "user",
-        "content": "Siapa nama saya?"
-    },
-    {
-        "role": "assistant",
-        "content": "Nama Anda adalah zaidan."
-    },
-    {
-        "role": "user",
-        "content": "Saya sedang membuat AI pribadi"
-    },
-    {
-        "role": "assistant",
-        "content": "Halo, zaidan! 😊  \nSenang mendengar kamu sedang membuat AI pribadi. Jika kamu butuh bantuan dalam pengembangan, pemrograman, atau penjelasan tentang bagaimana membuat AI, saya siap membantu! Apa yang ingin kamu tanyakan atau butuhkan?"
-    },
-    {
-        "role": "user",
         "content": "AI yang sedang saya buat namanya apa?"
     },
     {
@@ -78,5 +38,45 @@
     {
         "role": "assistant",
         "content": "Halo, zaidan! 😊 Apa yang bisa saya bantu hari ini?"
+    },
+    {
+        "role": "user",
+        "content": "halo zai"
+    },
+    {
+        "role": "assistant",
+        "content": "Halo, zaidan! 😊 Apa yang bisa saya bantu hari ini?"
+    },
+    {
+        "role": "user",
+        "content": "nama saya zaidan"
+    },
+    {
+        "role": "assistant",
+        "content": "Baik, saya akan mengingat nama Anda zaidan."
+    },
+    {
+        "role": "user",
+        "content": "Siapa nama saya?"
+    },
+    {
+        "role": "assistant",
+        "content": "Nama Anda adalah zaidan."
+    },
+    {
+        "role": "user",
+        "content": "apa yang kamu ingat tentang saya"
+    },
+    {
+        "role": "assistant",
+        "content": "Berikut informasi yang saya ingat tentang Anda:\n\n- Nama: zaidan"
+    },
+    {
+        "role": "user",
+        "content": "siapa presiden indonesia"
+    },
+    {
+        "role": "assistant",
+        "content": "Presiden Indonesia saat ini adalah Joko Widodo (Jokowi). Ia menjabat sejak 20 Oktober 2014 dan terpilih kembali pada pemilihan umum 2019."
     }
 ]
