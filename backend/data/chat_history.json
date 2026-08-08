@@ -1,0 +1,82 @@
+[
+    {
+        "role": "user",
+        "content": "Tadi saya bilang nama saya siapa?"
+    },
+    {
+        "role": "assistant",
+        "content": "Nama Anda adalah zaidan."
+    },
+    {
+        "role": "user",
+        "content": "Halo ZAI"
+    },
+    {
+        "role": "assistant",
+        "content": "Halo, zaidan! 😊 Apa yang bisa saya bantu hari ini?"
+    },
+    {
+        "role": "user",
+        "content": "Nama saya Zaidan"
+    },
+    {
+        "role": "assistant",
+        "content": "Baik, saya akan mengingat nama Anda zaidan."
+    },
+    {
+        "role": "user",
+        "content": "Siapa nama saya?"
+    },
+    {
+        "role": "assistant",
+        "content": "Nama Anda adalah zaidan."
+    },
+    {
+        "role": "user",
+        "content": "Saya sedang membuat AI pribadi"
+    },
+    {
+        "role": "assistant",
+        "content": "Halo, zaidan! 😊  \nSenang mendengar kamu sedang membuat AI pribadi. Jika kamu butuh bantuan dalam pengembangan, pemrograman, atau penjelasan tentang bagaimana membuat AI, saya siap membantu! Apa yang ingin kamu tanyakan atau butuhkan?"
+    },
+    {
+        "role": "user",
+        "content": "AI yang sedang saya buat namanya apa?"
+    },
+    {
+        "role": "assistant",
+        "content": "AI yang sedang Anda buat belum memiliki nama, zaidan. Jika kamu ingin memberi nama kepada AI yang sedang kamu kembangkan, kamu bisa memberinya nama apa pun yang kamu sukai, seperti \"ZAI\" seperti saya, atau nama lain yang relevan dengan fungsinya. Apakah kamu ingin membantu menamainya? 😊"
+    },
+    {
+        "role": "user",
+        "content": "Apa yang kamu ingat tentang saya"
+    },
+    {
+        "role": "assistant",
+        "content": "Berikut informasi yang saya ingat:\n\n- Nama pengguna: zaidan\n- Umur pengguna: 21\n- Alamat pengguna: cibubur\n- Warna favorit pengguna: hitam\n- Hobi pengguna: coding\n- Makanan favorit pengguna: nasi goreng"
+    },
+    {
+        "role": "user",
+        "content": "Hapus semua memory"
+    },
+    {
+        "role": "assistant",
+        "content": "Baik. Seluruh memory profil Anda sudah dihapus."
+    },
+    {
+        "role": "user",
+        "content": "Halo ZAI"
+    },
+    {
+        "role": "assistant",
+        "content": "Halo, zaidan! 😊 Apa yang bisa saya bantu hari ini?"
+    },
+    {
+        "role": "user",
+        "content": "halo zai"
+    },
+    {
+        "role": "assistant",
+        "content": "Halo, zaidan! 😊 Apa yang bisa saya bantu hari ini?"
+    }
+]
