@@ -1,4 +1,5 @@
 ﻿import os
+import shutil
 import subprocess
 from typing import Optional
 
@@ -6,6 +7,34 @@ from typing import Optional
 # ============================================================
 # APPLICATION CONFIGURATION
 # ============================================================
+
+CHROME_PATHS = [
+    r"C:\Program Files\Google\Chrome\Application\chrome.exe",
+    r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe",
+    os.path.expandvars(
+        r"%LOCALAPPDATA%\Google\Chrome\Application\chrome.exe"
+    ),
+]
+
+
+def find_chrome() -> Optional[str]:
+    """
+    Mencari Google Chrome pada lokasi umum Windows.
+    """
+
+    # Cek lokasi yang diketahui
+    for path in CHROME_PATHS:
+        if os.path.isfile(path):
+            return path
+
+    # Cek PATH Windows
+    chrome_from_path = shutil.which("chrome.exe")
+
+    if chrome_from_path:
+        return chrome_from_path
+
+    return None
+
 
 APPLICATIONS = {
     "chrome": {
@@ -86,6 +115,40 @@ def normalize_target(target: Optional[str]) -> Optional[str]:
 
 
 # ============================================================
+# RESOLVE APPLICATION COMMAND
+# ============================================================
+
+def resolve_command(target: str) -> Optional[str]:
+
+    if target == "chrome":
+        return find_chrome()
+
+    application = APPLICATIONS.get(target)
+
+    if not application:
+        return None
+
+    command = application["command"]
+
+    # Untuk executable Windows, cek PATH terlebih dahulu.
+    if command.endswith(".exe"):
+        resolved = shutil.which(command)
+
+        if resolved:
+            return resolved
+
+    # Untuk command seperti "code", cek PATH.
+    resolved = shutil.which(command)
+
+    if resolved:
+        return resolved
+
+    # Tetap kembalikan command agar subprocess dapat mencoba
+    # command tersebut jika Windows bisa menemukannya.
+    return command
+
+
+# ============================================================
 # OPEN APPLICATION
 # ============================================================
 
@@ -94,7 +157,6 @@ def open_application(target: Optional[str]) -> dict:
     target = normalize_target(target)
 
     if not target:
-
         return {
             "success": False,
             "message": "Saya belum mengetahui aplikasi yang ingin dibuka.",
@@ -103,7 +165,6 @@ def open_application(target: Optional[str]) -> dict:
     application = APPLICATIONS.get(target)
 
     if not application:
-
         return {
             "success": False,
             "message": (
@@ -112,8 +173,17 @@ def open_application(target: Optional[str]) -> dict:
             ),
         }
 
-    command = application["command"]
     display_name = application["display"]
+    command = resolve_command(target)
+
+    if not command:
+        return {
+            "success": False,
+            "message": (
+                f"{display_name} tidak ditemukan "
+                "di komputer."
+            ),
+        }
 
     try:
 
@@ -121,23 +191,12 @@ def open_application(target: Optional[str]) -> dict:
         # WINDOWS APPLICATION
         # ----------------------------------------------------
 
-        if command.endswith(".exe"):
-
-            subprocess.Popen(
-                [command],
-                shell=False,
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-            )
-
-        else:
-
-            subprocess.Popen(
-                [command],
-                shell=True,
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-            )
+        subprocess.Popen(
+            [command],
+            shell=False,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+        )
 
         return {
             "success": True,
@@ -184,33 +243,23 @@ def application_exists(target: Optional[str]) -> bool:
     if not application:
         return False
 
-    command = application["command"]
+    command = resolve_command(target)
+
+    if not command:
+        return False
+
+    # Jika command sudah berupa path absolut
+    if os.path.isabs(command):
+        return os.path.isfile(command)
 
     try:
 
-        if command.endswith(".exe"):
-
-            result = subprocess.run(
-                [
-                    "where",
-                    command,
-                ],
-                capture_output=True,
-                text=True,
-                shell=False,
-            )
-
-        else:
-
-            result = subprocess.run(
-                [
-                    "where",
-                    command,
-                ],
-                capture_output=True,
-                text=True,
-                shell=True,
-            )
+        result = subprocess.run(
+            ["where", command],
+            capture_output=True,
+            text=True,
+            shell=False,
+        )
 
         return result.returncode == 0
 
